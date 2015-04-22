@@ -45,6 +45,7 @@ func TestConsumer_Start_Handler(t *testing.T) {
 	c.SetLogger(l, nsq.LogLevelDebug)
 
 	c.Set("nsqd", ":5001")
+	c.Set("nsqds", []interface{}{":5001"})
 	c.Set("concurrency", 5)
 	c.Set("max_attempts", 10)
 	c.Set("max_in_flight", 150)

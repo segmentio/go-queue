@@ -74,16 +74,26 @@ func (c *Consumer) Set(option string, value interface{}) {
 		c.topic = value.(string)
 	case "channel":
 		c.channel = value.(string)
+	case "concurrency":
+		c.concurrency = value.(int)
 	case "nsqd":
 		c.nsqds = []string{value.(string)}
 	case "nsqlookupd":
 		c.nsqlookupds = []string{value.(string)}
 	case "nsqds":
-		c.nsqds = value.([]string)
+		s, err := strings(value)
+		if err != nil {
+			c.err = fmt.Errorf("%q: %v", option, err)
+			return
+		}
+		c.nsqds = s
 	case "nsqlookupds":
-		c.nsqlookupds = value.([]string)
-	case "concurrency":
-		c.concurrency = value.(int)
+		s, err := strings(value)
+		if err != nil {
+			c.err = fmt.Errorf("%q: %v", option, err)
+			return
+		}
+		c.nsqlookupds = s
 	default:
 		err := c.config.Set(option, value)
 		if err != nil {
@@ -138,4 +148,28 @@ func (c *Consumer) connect() error {
 	}
 
 	return nil
+}
+
+// Returns a slice of strings or error.
+//
+// Primarily to allow for []interface{} from parsing configuration files.
+func strings(v interface{}) ([]string, error) {
+	switch v.(type) {
+	case []string:
+		return v.([]string), nil
+	case []interface{}:
+		var ret []string
+		for _, e := range v.([]interface{}) {
+			s, ok := e.(string)
+
+			if !ok {
+				return nil, fmt.Errorf("string expected, got %v", e)
+			}
+
+			ret = append(ret, s)
+		}
+		return ret, nil
+	default:
+		return nil, fmt.Errorf("strings expected")
+	}
 }
