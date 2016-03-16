@@ -6,10 +6,13 @@
 //
 package queue
 
-import "github.com/bitly/go-nsq"
-import "log"
-import "fmt"
-import "os"
+import (
+	"fmt"
+	"log"
+	"os"
+
+	"github.com/nsqio/go-nsq"
+)
 
 // Logger interface.
 type logger interface {
