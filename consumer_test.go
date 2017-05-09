@@ -2,7 +2,7 @@ package queue_test
 
 import "github.com/segmentio/go-queue"
 import "github.com/bmizerany/assert"
-import "github.com/bitly/go-nsq"
+import "github.com/nsqio/go-nsq"
 import "testing"
 import "bytes"
 import "log"
